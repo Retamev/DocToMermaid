@@ -1,0 +1,24 @@
+{
+  "name": "mermaid-rule",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start -p 3000"
+  },
+  "dependencies": {
+    "@types/multer": "^1.4.8",
+    "@types/node": "^20.8.0",
+    "html2canvas": "^1.4.1",
+    "mermaid": "^10.6.1",
+    "multer": "^1.4.5-lts.1",
+    "next": "14.2.6",
+    "openai": "^4.58.1",
+    "pdf-parse": "^1.1.1",
+    "pdf2pic": "^2.1.4",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "supports-color": "^10.2.0"
+  }
+}
