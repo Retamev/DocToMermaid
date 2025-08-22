@@ -377,20 +377,6 @@ export default function ProgressBar({
             页数 {fileInfo.pages}，大小 {fileInfo.fileSizeMB}MB，
             策略 {processingStrategy}，
             预计耗时 {Math.round(estimatedTime)}秒
-            {(() => {
-              const history = getHistoricalData();
-              const relevantHistory = history.filter(h => h.strategy === processingStrategy);
-              if (relevantHistory.length > 0) {
-                const avgAccuracy = relevantHistory.reduce((sum, h) => sum + (h.accuracy || 0), 0) / relevantHistory.length;
-                const confidenceLevel = relevantHistory.length >= 10 ? '高' : relevantHistory.length >= 5 ? '中' : '低';
-                return (
-                  <span style={{ marginLeft: '8px', color: avgAccuracy > 80 ? 'var(--success)' : avgAccuracy > 60 ? 'var(--warning)' : 'var(--error)' }}>
-                    （预估可信度: {confidenceLevel}，历史准确率: {Math.round(avgAccuracy)}%，基于 {relevantHistory.length} 次记录）
-                  </span>
-                );
-              }
-              return <span style={{ marginLeft: '8px', color: 'var(--text-tertiary)' }}>（首次处理此类文档）</span>;
-            })()}
           </div>
         </div>
       )}

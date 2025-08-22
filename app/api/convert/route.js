@@ -25,6 +25,7 @@ export async function POST(request) {
     const formData = await request.formData();
     const file = formData.get('file');
     const direction = (formData.get('direction') || 'TB').toString().toUpperCase();
+    const chartType = String(formData.get('chartType') || 'mermaid'); // 图表类型
     const vision = String(formData.get('vision') || 'on');
     const enableMapReduce = String(formData.get('mapReduce') || 'auto'); // 'on' | 'off' | 'auto'
 
@@ -76,7 +77,7 @@ export async function POST(request) {
 
     if (!process.env.ARK_API_KEY && !process.env.VOLC_API_KEY) {
       // 无API Key，使用规则版本
-      mermaid = textToMermaid(text, direction, { maxNodes: 60 });
+      mermaid = textToMermaid(text, direction, { maxNodes: 60, chartType });
       processingStrategy = 'rule-based';
     } else if (shouldUseMapReduce) {
       // 使用Map-Reduce处理大文档
@@ -86,6 +87,7 @@ export async function POST(request) {
           chunkSize: PDF_CONFIG.chunkSize,
           chunkOverlap: PDF_CONFIG.chunkOverlap,
           maxNodes: 60,
+          chartType,
         });
         
         mermaid = mapReduceResult.mermaid;
@@ -96,7 +98,7 @@ export async function POST(request) {
       } catch (e) {
         console.error('Map-Reduce failed, falling back to simple AI:', e);
         // 回退到简单AI处理
-        mermaid = await aiGenerateMermaid(text.slice(0, 20000), direction, 60);
+        mermaid = await aiGenerateMermaid(text.slice(0, 20000), direction, 60, { chartType });
         usedAI = true;
         processingStrategy = 'ai-fallback';
       }
@@ -140,16 +142,16 @@ export async function POST(request) {
           
           if (images.length > 0) {
             mermaid = await cacheManager.cacheLLMCall(
-              `${text}_${images.length}_images`, 'vision', { direction, maxNodes: 60 },
-              async () => await aiGenerateMermaidVision({ text, images, direction, maxNodes: 60 })
+              `${text}_${images.length}_images`, 'vision', { direction, maxNodes: 60, chartType },
+              async () => await aiGenerateMermaidVision({ text, images, direction, maxNodes: 60, chartType })
             );
             usedAI = true;
             usedVision = true;
           } else {
             // 图像渲染失败，回退到文本AI
             mermaid = await cacheManager.cacheLLMCall(
-              text, 'text', { direction, maxNodes: 60 },
-              async () => await aiGenerateMermaid(text, direction, 60)
+              text, 'text', { direction, maxNodes: 60, chartType },
+              async () => await aiGenerateMermaid(text, direction, 60, { chartType })
             );
             usedAI = true;
             usedVision = false;
@@ -157,8 +159,8 @@ export async function POST(request) {
         } else {
           // 快速文本处理
           mermaid = await cacheManager.cacheLLMCall(
-            text, 'text', { direction, maxNodes: 60 },
-            async () => await aiGenerateMermaid(text, direction, 60)
+            text, 'text', { direction, maxNodes: 60, chartType },
+            async () => await aiGenerateMermaid(text, direction, 60, { chartType })
           );
           usedAI = true;
           usedVision = false;
@@ -171,7 +173,7 @@ export async function POST(request) {
         };
       } catch (e) {
         console.error('AI processing failed, falling back to rules:', e);
-        mermaid = textToMermaid(text, direction, { maxNodes: 60 });
+        mermaid = textToMermaid(text, direction, { maxNodes: 60, chartType });
         usedAI = false;
         usedVision = false;
         processingStrategy = 'rule-fallback';

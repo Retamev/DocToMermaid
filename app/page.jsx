@@ -3,6 +3,7 @@ import { useState } from 'react';
 import MermaidRenderer from '../components/MermaidRenderer';
 import ProgressBar from '../components/ProgressBar';
 import ProcessingHistory from '../components/ProcessingHistory';
+import ChartTypeSelector from '../components/ChartTypeSelector';
 import { ThemeToggle } from '../contexts/ThemeContext';
 
 export default function HomePage() {
@@ -17,6 +18,23 @@ export default function HomePage() {
   const [fileInfo, setFileInfo] = useState(null);
   const [processingStrategy, setProcessingStrategy] = useState('unknown');
   const [showHistory, setShowHistory] = useState(false);
+  const [chartType, setChartType] = useState('mermaid');
+  const [showChartSelector, setShowChartSelector] = useState(false);
+
+  // 获取图表类型显示名称
+  const getChartTypeName = (type) => {
+    const typeNames = {
+      'mermaid': 'Mermaid流程图',
+      'flowchart': '标准流程图',
+      'orgchart': '组织架构图',
+      'mindmap': '思维导图',
+      'network': '网络拓扑图',
+      'timeline': '时间轴图',
+      'gantt': '甘特图',
+      'uml': 'UML类图'
+    };
+    return typeNames[type] || '图表';
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -53,6 +71,7 @@ export default function HomePage() {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('direction', direction);
+      formData.append('chartType', chartType); // 添加图表类型参数
       formData.append('vision', vision ? 'on' : 'off');
       formData.append('mapReduce', mapReduce);
       
@@ -114,6 +133,30 @@ export default function HomePage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <ThemeToggle size="medium" />
           <button
+            onClick={() => window.location.href = '/guide'}
+            className="btn-secondary"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              fontSize: '14px',
+            }}
+          >
+            📚 使用指南
+          </button>
+          <button
+            onClick={() => setShowChartSelector(!showChartSelector)}
+            className="btn-secondary"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              fontSize: '14px',
+            }}
+          >
+            🎨 图表类型
+          </button>
+          <button
             onClick={() => setShowHistory(true)}
             className="btn-secondary"
             style={{
@@ -127,7 +170,19 @@ export default function HomePage() {
           </button>
         </div>
       </div>
-      <p style={{ color: 'var(--text-secondary)', marginBottom: 24 }}>上传 PDF，选择图方向（横向/纵向），支持多模态（文本+页图像采样）生成 Mermaid flowchart 代码。</p>
+      <p style={{ color: 'var(--text-secondary)', marginBottom: 24 }}>上传 PDF，支持多模态（文本+页图像采样）生成多种类型的图表代码。图表类型和方向可在上方图表类型选择器中配置。</p>
+
+      {/* 图表类型选择器 */}
+      {showChartSelector && (
+        <div className="card" style={{ padding: '16px', marginBottom: '16px' }}>
+          <ChartTypeSelector
+            selectedType={chartType}
+            onTypeChange={setChartType}
+            selectedDirection={direction}
+            onDirectionChange={setDirection}
+          />
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 16 }}>
         <div className="card" style={{ padding: '24px', marginBottom: '16px' }}>
@@ -148,17 +203,7 @@ export default function HomePage() {
               }}
             />
           </div>
-          <div style={{ marginBottom: 16 }}>
-            <label style={{ display: 'block', marginBottom: 8, fontWeight: 600, color: 'var(--text-primary)' }}>图方向</label>
-            <div style={{ display: 'flex', gap: 16 }}>
-              <label style={{ color: 'var(--text-secondary)', cursor: 'pointer' }}>
-                <input type="radio" name="direction" value="TB" checked={direction === 'TB'} onChange={() => setDirection('TB')} style={{ marginRight: '6px' }} /> 纵向（TB）
-              </label>
-              <label style={{ color: 'var(--text-secondary)', cursor: 'pointer' }}>
-                <input type="radio" name="direction" value="LR" checked={direction === 'LR'} onChange={() => setDirection('LR')} style={{ marginRight: '6px' }} /> 横向（LR）
-              </label>
-            </div>
-          </div>
+          {/* 图表方向选择已移至图表类型选择器中，避免重复功能 */}
           <div style={{ marginBottom: 16 }}>
             <label style={{ display: 'block', marginBottom: 8, fontWeight: 600, color: 'var(--text-primary)' }}>多模态（Vision）</label>
             <label style={{ marginRight: 16, color: 'var(--text-secondary)', cursor: 'pointer' }}>
@@ -191,7 +236,7 @@ export default function HomePage() {
               fontWeight: '600'
             }}
           >
-            {loading ? '🔄 生成中…' : '🚀 生成 Mermaid 代码'}
+            {loading ? '🔄 生成中…' : `🚀 生成${getChartTypeName(chartType)}代码`}
           </button>
         </div>
       </form>
@@ -286,7 +331,7 @@ export default function HomePage() {
               />
             </details>
           
-          {/* Mermaid渲染器 */}
+          {/* 高级图表渲染器 */}
           <MermaidRenderer code={result} direction={direction} />
           
             <div className="card" style={{ 
