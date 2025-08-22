@@ -11,6 +11,10 @@
   - 应急处理流程和监控指南
 
 ### 🎯 产品规划
+- **[CURRENT_PRODUCT_PRD.md](./CURRENT_PRODUCT_PRD.md)** - 现有产品功能产品需求文档
+  - 完整梳理DocToMermaid产品的10个核心功能模块
+  - 技术架构、性能指标、安全保护等详细规格
+  - 产品路线图和版本历史记录，用于持久化维护
 - **[IMAGE_TO_MERMAID_PRD.md](./IMAGE_TO_MERMAID_PRD.md)** - 图片转Mermaid功能产品需求文档
   - 完整的MVP功能规划和技术实现方案
   - 用户界面设计和交互流程
