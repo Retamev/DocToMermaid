@@ -83,7 +83,7 @@ graph TD
 
 1. **克隆项目**
 ```bash
-git clone https://github.com/your-username/DocToMermaid.git
+git clone https://github.com/Retamev/DocToMermaid.git
 cd DocToMermaid
 ```
 
@@ -315,8 +315,8 @@ npm start
 
 ## Contact
 
-- **GitHub Issues**：[提交问题或建议](https://github.com/your-username/DocToMermaid/issues)
-- **讨论区**：[GitHub Discussions](https://github.com/your-username/DocToMermaid/discussions)
+- **GitHub Issues**：[提交问题或建议](https://github.com/Retamev/DocToMermaid/issues)
+- **讨论区**：[GitHub Discussions](https://github.com/Retamev/DocToMermaid/discussions)
 - **邮箱**：your-email@example.com
 
 ## 🗺️ 路线图
