@@ -1,6 +1,6 @@
 export const metadata = {
-  title: 'PDF → Mermaid 生成器',
-  description: '根据 PDF 文本生成 Mermaid 流程图代码',
+  title: 'Trama',
+  description: 'Notitias in diagrammata teximus ｜ 把信息织成图表',
 };
 
 import { ThemeProvider } from '../contexts/ThemeContext';

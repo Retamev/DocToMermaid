@@ -2,7 +2,7 @@
 
 ## 🔒 Supported Versions
 
-We actively support the following versions of DocToMermaid with security updates:
+We actively support the following versions of Trama with security updates:
 
 | Version | Supported          |
 | ------- | ------------------ |
@@ -11,7 +11,7 @@ We actively support the following versions of DocToMermaid with security updates
 
 ## 🚨 Reporting a Vulnerability
 
-We take the security of DocToMermaid seriously. If you believe you have found a security vulnerability, please report it to us as described below.
+We take the security of Trama seriously. If you believe you have found a security vulnerability, please report it to us as described below.
 
 ### 📧 How to Report
 
@@ -87,7 +87,7 @@ We follow the principle of responsible disclosure:
 
 ### Security Best Practices for Users
 
-1. **Keep Updated**: Always use the latest version of DocToMermaid
+1. **Keep Updated**: Always use the latest version of Trama
 2. **Secure API Keys**: Never expose your API keys in client-side code
 3. **Environment Variables**: Store sensitive configuration in environment variables
 4. **HTTPS**: Always use HTTPS in production deployments
@@ -105,7 +105,7 @@ We regularly conduct security audits and assessments:
 
 ## 📋 Security Checklist for Contributors
 
-When contributing to DocToMermaid, please ensure:
+When contributing to Trama, please ensure:
 
 - [ ] No hardcoded secrets or API keys
 - [ ] Input validation for all user inputs

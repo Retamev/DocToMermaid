@@ -2,7 +2,7 @@
 
 ## 📋 标准操作程序 (Standard Operating Procedure)
 
-本文档记录了 PDF → Mermaid 项目在 Vercel 平台的部署维护流程，基于实际部署问题的解决经验总结。
+本文档记录了 Trama 项目在 Vercel 平台的部署维护流程，基于实际部署问题的解决经验总结。
 
 ---
 
@@ -52,11 +52,17 @@ git add .
 git commit -m "部署前代码提交"
 git push origin main
 
-# 2. 执行部署
+# 2. 关联到正确的 Vercel 项目
+vercel link --project info2mermaid --yes
+
+# 3. 执行部署
 vercel --prod
 
-# 3. 验证部署
-curl -I [部署URL]
+# 4. 验证部署
+curl -I https://info2mermaid.vercel.app
+curl -s -o /dev/null -w "%{http_code}" https://info2mermaid.vercel.app/guide
+curl -s -o /dev/null -w "%{http_code}" https://info2mermaid.vercel.app/api/convert
+curl -s -o /dev/null -w "%{http_code}" https://info2mermaid.vercel.app/api/image
 ```
 
 ---
@@ -89,7 +95,28 @@ git push origin main
 - 项目初始化时就创建 `public` 目录
 - 在 `.gitignore` 中确保 `public` 目录被跟踪
 
-### 问题 2: 部署成功但返回 404
+### 问题 2: 项目名称不符合 Vercel 规范
+
+**症状：**
+```
+Error: Project names can be up to 100 characters long and must be lowercase. They can include letters, digits, and the following characters: '.', '_', '-'. However, they cannot contain the sequence '---'. (400)
+```
+
+**根本原因：**
+项目名称包含不符合 Vercel 规范的字符或格式。
+
+**解决方案：**
+```bash
+# 使用正确的项目名称重新关联
+vercel link --project info2mermaid --yes
+```
+
+**预防措施：**
+- 确保项目名称为小写
+- 只使用字母、数字、点号、下划线、连字符
+- 避免使用连续的三个连字符 '---'
+
+### 问题 3: 部署成功但返回 404
 
 **症状：**
 ```
@@ -127,7 +154,7 @@ vercel --prod
 - 项目初始化时就配置正确的 `vercel.json`
 - 定期检查 Vercel 官方文档的最新配置要求
 
-### 问题 3: JSON 解析错误
+### 问题 4: JSON 解析错误
 
 **症状：**
 ```
@@ -378,7 +405,8 @@ curl -w "@curl-format.txt" -o /dev/null -s "$DEPLOY_URL"
 
 | 日期 | 版本 | 更新内容 | 更新人 |
 |------|------|----------|--------|
-| 2024-08-22 | v1.0 | 初始版本，基于部署问题解决经验 | 开发团队 |
+| 2025-08-22 | v1.1 | 添加项目名称规范问题解决方案，更新部署命令包含正确项目关联 | 开发团队 |
+| 2025-08-22 | v1.0 | 初始版本，基于部署问题解决经验 | 开发团队 |
 
 ---
 
@@ -388,6 +416,7 @@ curl -w "@curl-format.txt" -o /dev/null -s "$DEPLOY_URL"
 
 ```bash
 # 部署相关
+vercel link --project info2mermaid --yes  # 关联到正确项目
 vercel --prod                    # 生产环境部署
 vercel ls                        # 查看部署列表
 vercel logs [URL]               # 查看部署日志

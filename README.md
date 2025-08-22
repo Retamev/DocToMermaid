@@ -1,4 +1,4 @@
-# DocToMermaid 智能文档解析引擎
+# Trama｜Notitias in diagrammata teximus（把信息织成图表）
 
 🚀 基于 Next.js 构建的智能文档解析与图表生成引擎，能够将复杂的PDF文档转换为结构化的Mermaid流程图代码。
 

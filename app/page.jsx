@@ -188,9 +188,48 @@ export default function HomePage() {
 
   return (
     <main style={{ maxWidth: 800, margin: '40px auto', padding: '0 16px', backgroundColor: 'var(--bg-primary)', minHeight: '100vh', transition: 'background-color var(--transition-normal)' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-        <h1 style={{ fontSize: 28, margin: 0, color: 'var(--text-primary)' }}>PDF → Mermaid 生成器</h1>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+      <div style={{ 
+         display: 'flex', 
+         justifyContent: 'space-between', 
+         alignItems: 'flex-start', 
+         marginBottom: 20, 
+         gap: 'clamp(12px, 3vw, 20px)',
+         flexWrap: 'wrap'
+       }}>
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: 'column',
+          gap: '8px',
+          minWidth: '200px',
+          flex: '1 1 auto'
+        }}>
+          <h1 style={{ 
+             fontSize: 'clamp(26px, 5.5vw, 36px)', 
+             margin: 0, 
+             color: 'var(--text-primary)',
+             fontWeight: '700',
+             lineHeight: '1.1',
+             letterSpacing: '-0.02em',
+             fontFamily: '"Times New Roman", Times, serif'
+           }}>Trama</h1>
+          <div style={{ 
+             color: 'var(--text-secondary)', 
+             fontSize: 'clamp(12px, 2.8vw, 14px)',
+             fontWeight: '400',
+             lineHeight: '1.5',
+             opacity: '0.85',
+             whiteSpace: 'nowrap',
+             overflow: 'hidden',
+             textOverflow: 'ellipsis',
+             maxWidth: '400px'
+           }}>Notitias in diagrammata teximus ｜ 把信息织成图表</div>
+        </div>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: 'clamp(8px, 2vw, 12px)',
+          flexShrink: 0
+        }}>
           <ThemeToggle size="medium" />
           <button
             onClick={() => window.location.href = '/guide'}
@@ -462,7 +501,7 @@ export default function HomePage() {
               border: '1px solid var(--border-primary)'
             }}>
               <div style={{ color: 'var(--text-secondary)', fontSize: 12, lineHeight: 1.5 }}>
-                <p style={{ margin: '0 0 8px 0' }}><strong style={{ color: 'var(--text-primary)' }}>🚀 DocToMermaid 智能文档解析引擎</strong></p>
+                <p style={{ margin: '0 0 8px 0' }}><strong style={{ color: 'var(--text-primary)' }}>🚀 Trama</strong></p>
                 <p style={{ margin: '4px 0' }}>🧠 智能路由：根据文档复杂度自动选择最佳解析策略</p>
                 <p style={{ margin: '4px 0' }}>🔄 Map-Reduce：大文档分块处理，突破上下文限制</p>
                 <p style={{ margin: '4px 0' }}>👁️ 多模态增强：结合文本和图像信息，提升解析准确性</p>

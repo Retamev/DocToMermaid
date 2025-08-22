@@ -1,6 +1,6 @@
 # 📚 项目文档中心
 
-本文件夹包含PDF → Mermaid项目的所有重要文档，包括产品需求、技术调研、部署指南等。
+本文件夹包含 Trama 项目的所有重要文档，包括产品需求、技术调研、部署指南等。
 
 ## 📋 文档目录
 
@@ -12,7 +12,7 @@
 
 ### 🎯 产品规划
 - **[CURRENT_PRODUCT_PRD.md](./CURRENT_PRODUCT_PRD.md)** - 现有产品功能产品需求文档
-  - 完整梳理DocToMermaid产品的10个核心功能模块
+  - 完整梳理 Trama 产品的10个核心功能模块
   - 技术架构、性能指标、安全保护等详细规格
   - 产品路线图和版本历史记录，用于持久化维护
 - **[IMAGE_TO_MERMAID_PRD.md](./IMAGE_TO_MERMAID_PRD.md)** - 图片转Mermaid功能产品需求文档
@@ -55,7 +55,7 @@
 
 ## 🔗 相关链接
 
-- 📂 **项目仓库**: [GitHub - DocToMermaid](https://github.com/Retamev/DocToMermaid)
+- 📂 **项目仓库**: [GitHub - Trama](https://github.com/Retamev/DocToMermaid)
 - 🌐 **在线演示**: [Vercel部署地址](https://info2mermaid.vercel.app)
 - 📧 **技术支持**: reta@cumt.edu.cn
 - 💬 **联系方式**: 微信 Soph0cless

@@ -20,7 +20,7 @@ export default function GuidePage() {
       {/* 头部导航 */}
       <div style={{
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'space-between',
         marginBottom: 'clamp(20px, 5vw, 30px)',
         paddingBottom: 'clamp(16px, 4vw, 20px)',
@@ -30,19 +30,53 @@ export default function GuidePage() {
       }}>
         <div style={{ 
           display: 'flex', 
-          alignItems: 'center', 
-          gap: 'clamp(12px, 3vw, 16px)',
-          flexWrap: 'wrap'
+          flexDirection: 'column',
+          gap: 'clamp(8px, 2vw, 12px)',
+          flex: 1
         }}>
-          <h1 style={{
-            fontSize: 'clamp(20px, 5vw, 28px)',
-            fontWeight: '700',
+          {/* Trama 品牌标题 */}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '4px'
+          }}>
+            <h1 style={{
+              fontSize: 'clamp(24px, 6vw, 32px)',
+              fontWeight: '700',
+              margin: 0,
+              color: 'var(--text-primary)',
+              lineHeight: '1.2',
+              fontFamily: '"Times New Roman", Times, serif'
+            }}>
+              Trama
+            </h1>
+            <div style={{
+              fontSize: 'clamp(12px, 3vw, 14px)',
+              color: 'var(--text-secondary)',
+              fontWeight: '400',
+              lineHeight: '1.4'
+            }}>
+              Notitias in diagrammata teximus ｜ 把信息织成图表
+            </div>
+          </div>
+          
+          {/* 使用指南副标题 */}
+          <h2 style={{
+            fontSize: 'clamp(18px, 4vw, 22px)',
+            fontWeight: '600',
             margin: 0,
-            color: 'var(--text-primary)',
-            lineHeight: '1.2'
+            color: 'var(--accent-primary)',
+            lineHeight: '1.3'
           }}>
             📚 使用指南
-          </h1>
+          </h2>
+        </div>
+        
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 'clamp(8px, 2vw, 12px)'
+        }}>
           <a
             href="https://github.com/Retamev/DocToMermaid"
             target="_blank"
@@ -82,6 +116,7 @@ export default function GuidePage() {
           </a>
           <ThemeToggle size="medium" />
         </div>
+        
         <button
           onClick={handleBack}
           style={{
@@ -213,15 +248,32 @@ export default function GuidePage() {
           }}>
             🎯 应用简介
           </h2>
-          <p style={{
-            fontSize: '16px',
-            lineHeight: '1.6',
-            color: 'var(--text-secondary)',
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px',
             marginBottom: '16px'
           }}>
-            PDF → Mermaid 生成器是一个智能工具，能够将PDF文档内容转换为Mermaid流程图代码。
-            支持多模态解析（文本+图像），提供高质量的图表渲染和导出功能。
-          </p>
+            <p style={{
+              fontSize: '16px',
+              lineHeight: '1.6',
+              color: 'var(--text-secondary)',
+              margin: 0
+            }}>
+              Trama 是一个智能工具，能够将 PDF/图片/文本等内容转换为 Mermaid 流程图代码。
+            </p>
+            <p style={{
+              fontSize: '14px',
+              lineHeight: '1.5',
+              color: 'var(--text-tertiary)',
+              fontStyle: 'italic',
+              margin: 0,
+              paddingLeft: '12px',
+              borderLeft: '2px solid var(--border-secondary)'
+            }}>
+              Notitias in diagrammata teximus ｜ 把信息织成图表
+            </p>
+          </div>
         </section>
 
         {/* 主要功能 */}
