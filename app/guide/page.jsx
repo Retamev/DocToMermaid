@@ -118,6 +118,90 @@ export default function GuidePage() {
         width: '100%',
         boxSizing: 'border-box'
       }}>
+        {/* 文档目录 */}
+        <section style={{ marginBottom: 'clamp(24px, 6vw, 40px)' }}>
+          <h2 style={{
+            fontSize: 'clamp(18px, 4vw, 24px)',
+            fontWeight: '600',
+            marginBottom: 'clamp(12px, 3vw, 16px)',
+            color: 'var(--accent-primary)',
+            lineHeight: '1.3'
+          }}>
+            🗂️ 文档目录
+          </h2>
+          <div style={{
+             display: 'grid',
+             gridTemplateColumns: 'repeat(auto-fit, minmax(min(260px, 100%), 1fr))',
+             gap: 'clamp(12px, 3vw, 16px)',
+             alignItems: 'stretch',
+             gridAutoRows: '1fr'
+           }}>
+            <a href="/guide/buttons" style={{ textDecoration: 'none', display: 'block', height: '100%' }}>
+               <div
+                 className="card"
+                 style={{
+                   padding: 'clamp(16px, 4vw, 20px)',
+                   backgroundColor: 'var(--bg-secondary)',
+                   border: '1px solid var(--border-primary)',
+                   transition: 'all 0.2s ease',
+                   height: '100%',
+                   display: 'flex',
+                   flexDirection: 'column',
+                   gap: '8px'
+                 }}
+                 onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)'; }}
+                 onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.backgroundColor = 'var(--bg-secondary)'; }}
+               >
+                 <h3 style={{
+                   fontSize: 'clamp(16px, 3.5vw, 18px)',
+                   fontWeight: '600',
+                   margin: 0,
+                   marginBottom: '8px',
+                   color: 'var(--text-primary)',
+                   lineHeight: '1.3'
+                 }}>
+                   🔘 按钮与操作
+                 </h3>
+                <p style={{ color: 'var(--text-secondary)', fontSize: 'clamp(12px, 3vw, 14px)', lineHeight: '1.5', marginTop: '8px' }}>
+                  复制代码、导出 PNG/SVG、主题切换、图表类型、处理历史、提交
+                </p>
+               </div>
+             </a>
+ 
+             <a href="/guide/modes" style={{ textDecoration: 'none', display: 'block', height: '100%' }}>
+               <div
+                 className="card"
+                 style={{
+                   padding: 'clamp(16px, 4vw, 20px)',
+                   backgroundColor: 'var(--bg-secondary)',
+                   border: '1px solid var(--border-primary)',
+                   transition: 'all 0.2s ease',
+                   height: '100%',
+                   display: 'flex',
+                   flexDirection: 'column',
+                   gap: '8px'
+                 }}
+                 onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)'; }}
+                 onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.backgroundColor = 'var(--bg-secondary)'; }}
+               >
+                 <h3 style={{
+                   fontSize: 'clamp(16px, 3.5vw, 18px)',
+                   fontWeight: '600',
+                   margin: 0,
+                   marginBottom: '8px',
+                   color: 'var(--text-primary)',
+                   lineHeight: '1.3'
+                 }}>
+                   📥 输入模式
+                 </h3>
+                <p style={{ color: 'var(--text-secondary)', fontSize: 'clamp(12px, 3vw, 14px)', lineHeight: '1.5', marginTop: '8px' }}>
+                  PDF上传与图片上传的适用场景、限制与最佳实践
+                </p>
+               </div>
+             </a>
+           </div>
+         </section>
+
         {/* 应用简介 */}
         <section style={{ marginBottom: 'clamp(24px, 6vw, 40px)' }}>
           <h2 style={{

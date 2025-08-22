@@ -7,6 +7,15 @@
 [![React](https://img.shields.io/badge/React-18.2.0-blue)](https://reactjs.org/)
 [![Mermaid](https://img.shields.io/badge/Mermaid-10.6.1-ff6b6b)](https://mermaid.js.org/)
 
+## 📦 版本更新
+
+### v1.1.0 (2025-08-22)
+- ✨ 图片转Mermaid MVP：新增图片上传模式（客户端轻量压缩）、后端接口 `/api/image`，结果展示复用现有 Mermaid 渲染与导出
+- 📚 使用指南信息架构重构：/guide 增加文档目录（TOC），新增子页面 /guide/buttons 与 /guide/modes
+- 🎨 UI 细节优化：指南目录卡片等高、描述文案行距与间距统一
+- 🛡️ 错误处理：/api/image 对空请求返回 400 Bad Request 校验通过
+- 📝 文档：更新 CURRENT_PRODUCT_PRD.md 的版本历史
+
 ## ✨ 核心特性
 
 ### 🧠 智能路由系统
@@ -24,6 +33,11 @@
 - **图文结合**：结合PDF文本和页面图像进行分析
 - **智能采样**：自动选择关键页面进行图像解析
 - **视觉理解**：利用多模态大模型理解复杂布局和图表
+
+### 🖼️ 图片转Mermaid（v1.1.0）
+- 图片上传模式：选择图片文件后进行本地轻量压缩，再发送至服务端处理
+- 后端接口：Next.js API Route `/api/image`
+- 结果复用：沿用 MermaidRenderer 实时渲染、导出与复制功能
 
 ### ⚡ 缓存优化
 - **多层缓存**：PDF解析、图像渲染、LLM调用结果缓存
@@ -163,6 +177,7 @@ yarn dev
 - **视觉舒适**：优化的配色方案，减少视觉疲劳
 
 #### 使用指南页面
+- 在线文档入口：/guide、/guide/buttons、/guide/modes（本地 http://localhost:3000/guide；线上 https://info2mermaid.vercel.app/guide ）
 - **📚 完整文档**：点击"使用指南"按钮访问详细说明
 - **功能介绍**：全面了解系统能力和特性
 - **使用步骤**：分步骤的操作指导
@@ -214,6 +229,7 @@ yarn dev
 - **html2canvas**：图片导出功能
 
 ### 后端技术
+- Next.js API Routes：`/api/convert`、`/api/image`（v1.1.0 新增图片接口）
 - **Node.js**：服务器运行时
 - **pdf-parse**：PDF文本解析
 - **pdf2pic**：PDF图像渲染
@@ -248,14 +264,15 @@ yarn dev
 ### Vercel 部署（推荐）
 
 1. **连接GitHub仓库**
-   - 在Vercel控制台导入GitHub项目
+   - 在Vercel控制台导入GitHub项目（或从模板一键导入）
 
-2. **配置环境变量**
-   - `VOLC_API_KEY`：火山引擎API密钥
-   - 其他可选配置变量
+2. **配置环境变量**（生产环境）
+   - `VOLC_API_KEY`：火山引擎API密钥（生产环境通常已在Vercel中配置，无需在代码中提示或暴露）
+   - 其他可选配置：`DEFAULT_LLM_MODEL`、`MAX_PDF_PAGES`、`MAX_FILE_SIZE_MB`、`CACHE_ENABLED`
 
 3. **自动部署**
-   - Vercel会自动构建和部署项目
+   - 每次 `git push` 到主分支将触发Vercel自动构建与部署
+   - 部署完成后访问线上地址（例如：https://info2mermaid.vercel.app ）
 
 ### Docker 部署
 
