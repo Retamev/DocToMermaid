@@ -57,7 +57,21 @@ export default function HomePage() {
       formData.append('mapReduce', mapReduce);
       
       const res = await fetch('/api/convert', { method: 'POST', body: formData });
-      const data = await res.json();
+      
+      // 检查响应是否为空或无效
+      const responseText = await res.text();
+      if (!responseText || responseText.trim() === '') {
+        throw new Error('服务器返回空响应，可能是环境变量未配置或服务异常');
+      }
+      
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (jsonError) {
+        console.error('JSON解析错误:', jsonError);
+        console.error('响应内容:', responseText);
+        throw new Error(`服务器响应格式错误: ${jsonError.message}`);
+      }
       
       if (!res.ok) {
         throw new Error(data?.error || '生成失败');

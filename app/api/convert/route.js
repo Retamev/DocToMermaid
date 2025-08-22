@@ -17,6 +17,11 @@ export async function POST(request) {
   const mapReduceProcessor = new MapReduceProcessor();
   
   try {
+    // 检查环境变量配置
+    const hasApiKey = process.env.VOLC_API_KEY || process.env.ARK_API_KEY;
+    if (!hasApiKey) {
+      console.warn('警告: 未配置API密钥，将使用基础规则解析');
+    }
     const formData = await request.formData();
     const file = formData.get('file');
     const direction = (formData.get('direction') || 'TB').toString().toUpperCase();
@@ -199,6 +204,24 @@ export async function POST(request) {
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
   } catch (err) {
-    return new Response(JSON.stringify({ error: '解析失败', detail: err?.message || String(err) }), { status: 500 });
+    console.error('API错误:', err);
+    
+    // 确保错误响应格式正确
+    const errorResponse = {
+      error: '解析失败',
+      detail: err?.message || String(err),
+      timestamp: new Date().toISOString(),
+    };
+    
+    return new Response(
+      JSON.stringify(errorResponse),
+      { 
+        status: 500,
+        headers: { 
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache'
+        }
+      }
+    );
   }
 }
