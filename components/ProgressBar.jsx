@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { useTheme } from '../contexts/ThemeContext';
 
 /**
  * 智能进度条组件
@@ -11,6 +12,7 @@ export default function ProgressBar({
   processingStrategy = 'unknown',
   onComplete = null 
 }) {
+  const { isDark } = useTheme();
   const [progress, setProgress] = useState(0);
   const [estimatedTime, setEstimatedTime] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -222,28 +224,42 @@ export default function ProgressBar({
       setProgress(100);
       setCurrentStage('完成');
       
-      // 保存实际处理时间用于学习
-      if (fileInfo && processingStrategy && estimatedTime > 0) {
+      // 保存实际处理时间用于学习（只保存一次）
+      if (fileInfo && processingStrategy && estimatedTime > 0 && elapsedTime > 0) {
         const actualTime = Math.round(elapsedTime);
-        saveProcessingData({
-          pages: fileInfo.pages || 1,
-          fileSizeMB: fileInfo.fileSizeMB || 1,
-          words: fileInfo.words || 1000,
-          strategy: processingStrategy,
-          estimatedTime: Math.round(estimatedTime),
-          actualTime: actualTime,
-          accuracy: actualTime > 0 ? Math.round((Math.min(estimatedTime, actualTime) / Math.max(estimatedTime, actualTime)) * 100) : 0,
+        const processingKey = `${fileInfo.pages}-${fileInfo.fileSizeMB}-${processingStrategy}-${Math.round(estimatedTime)}`;
+        
+        // 检查是否已经保存过相同的处理记录
+        const existingData = getHistoricalData();
+        const isDuplicate = existingData.some(record => {
+          const recordKey = `${record.pages}-${record.fileSizeMB}-${record.strategy}-${record.estimatedTime}`;
+          const timeDiff = Math.abs(record.timestamp - Date.now());
+          return recordKey === processingKey && timeDiff < 10000; // 10秒内的相同记录视为重复
         });
         
-        // 在控制台输出学习信息（开发调试用）
-        console.log(`Processing completed: Estimated ${Math.round(estimatedTime)}s, Actual ${actualTime}s, Accuracy: ${Math.round((Math.min(estimatedTime, actualTime) / Math.max(estimatedTime, actualTime)) * 100)}%`);
+        if (!isDuplicate) {
+          saveProcessingData({
+            pages: fileInfo.pages || 1,
+            fileSizeMB: fileInfo.fileSizeMB || 1,
+            words: fileInfo.words || 1000,
+            strategy: processingStrategy,
+            estimatedTime: Math.round(estimatedTime),
+            actualTime: actualTime,
+            accuracy: actualTime > 0 ? Math.round((Math.min(estimatedTime, actualTime) / Math.max(estimatedTime, actualTime)) * 100) : 0,
+          });
+          
+          // 在控制台输出学习信息（开发调试用）
+          console.log(`Processing completed: Estimated ${Math.round(estimatedTime)}s, Actual ${actualTime}s, Accuracy: ${Math.round((Math.min(estimatedTime, actualTime) / Math.max(estimatedTime, actualTime)) * 100)}%`);
+        } else {
+          console.log('Duplicate processing record detected, skipping save.');
+        }
       }
       
       if (onComplete) {
         setTimeout(onComplete, 500);
       }
     }
-  }, [isProcessing, progress, onComplete, fileInfo, processingStrategy, estimatedTime, elapsedTime, saveProcessingData]);
+  }, [isProcessing, progress, onComplete, fileInfo, processingStrategy, estimatedTime, elapsedTime]);
 
   if (!isProcessing && progress === 0) {
     return null;
@@ -253,13 +269,9 @@ export default function ProgressBar({
   const progressPercentage = Math.round(progress);
 
   return (
-    <div style={{
+    <div className="card" style={{
       margin: '20px 0',
       padding: '20px',
-      backgroundColor: '#f8fafc',
-      border: '1px solid #e2e8f0',
-      borderRadius: '12px',
-      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
     }}>
       {/* 进度信息 */}
       <div style={{
@@ -269,20 +281,20 @@ export default function ProgressBar({
         marginBottom: '12px',
       }}>
         <div>
-          <h4 style={{ margin: 0, fontSize: '16px', fontWeight: '600', color: '#1f2937' }}>
+          <h4 style={{ margin: 0, fontSize: '16px', fontWeight: '600', color: 'var(--text-primary)' }}>
             {isProcessing ? '🔄 处理中...' : '✅ 处理完成'}
           </h4>
-          <p style={{ margin: '4px 0 0 0', fontSize: '14px', color: '#6b7280' }}>
+          <p style={{ margin: '4px 0 0 0', fontSize: '14px', color: 'var(--text-secondary)' }}>
             当前阶段：{currentStage}
           </p>
         </div>
         
         <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: '24px', fontWeight: '700', color: '#3b82f6' }}>
+          <div style={{ fontSize: '24px', fontWeight: '700', color: 'var(--accent-primary)' }}>
             {progressPercentage}%
           </div>
           {isProcessing && remainingTime > 0 && (
-            <div style={{ fontSize: '12px', color: '#6b7280' }}>
+            <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
               预计剩余：{Math.ceil(remainingTime)}秒
             </div>
           )}
@@ -293,21 +305,22 @@ export default function ProgressBar({
       <div style={{
         width: '100%',
         height: '8px',
-        backgroundColor: '#e5e7eb',
-        borderRadius: '4px',
+        backgroundColor: 'var(--bg-secondary)',
+        borderRadius: 'var(--radius-sm)',
         overflow: 'hidden',
         marginBottom: '12px',
+        border: '1px solid var(--border-primary)',
       }}>
         <div
           style={{
             width: `${progressPercentage}%`,
             height: '100%',
-            backgroundColor: isProcessing ? '#3b82f6' : '#10b981',
-            borderRadius: '4px',
+            backgroundColor: isProcessing ? 'var(--accent-primary)' : 'var(--success)',
+            borderRadius: 'var(--radius-sm)',
             transition: 'width 0.3s ease-in-out, background-color 0.3s ease-in-out',
             background: isProcessing 
-              ? 'linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%)'
-              : 'linear-gradient(90deg, #10b981 0%, #059669 100%)',
+              ? 'linear-gradient(90deg, var(--accent-primary) 0%, var(--accent-secondary) 100%)'
+              : 'linear-gradient(90deg, var(--success) 0%, var(--success-dark) 100%)',
           }}
         />
       </div>
@@ -317,7 +330,7 @@ export default function ProgressBar({
         display: 'flex',
         justifyContent: 'space-between',
         fontSize: '12px',
-        color: '#6b7280',
+        color: 'var(--text-secondary)',
       }}>
         {stages.map((stage, index) => {
           let cumulativeWeight = 0;
@@ -337,14 +350,14 @@ export default function ProgressBar({
                 alignItems: 'center',
                 opacity: isActive ? 1 : (isCompleted ? 0.8 : 0.5),
                 fontWeight: isActive ? '600' : '400',
-                color: isActive ? '#3b82f6' : (isCompleted ? '#10b981' : '#6b7280'),
+                color: isActive ? 'var(--accent-primary)' : (isCompleted ? 'var(--success)' : 'var(--text-secondary)'),
               }}
             >
               <div style={{
                 width: '8px',
                 height: '8px',
                 borderRadius: '50%',
-                backgroundColor: isActive ? '#3b82f6' : (isCompleted ? '#10b981' : '#d1d5db'),
+                backgroundColor: isActive ? 'var(--accent-primary)' : (isCompleted ? 'var(--success)' : 'var(--border-secondary)'),
                 marginBottom: '4px',
               }} />
               <span>{stage.name}</span>
@@ -355,15 +368,12 @@ export default function ProgressBar({
 
       {/* 处理详情 */}
       {fileInfo && (
-        <div style={{
+        <div className="card" style={{
           marginTop: '16px',
           padding: '12px',
-          backgroundColor: '#ffffff',
-          borderRadius: '8px',
-          border: '1px solid #e5e7eb',
         }}>
-          <div style={{ fontSize: '12px', color: '#6b7280', lineHeight: '1.5' }}>
-            <strong>处理信息：</strong>
+          <div style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
+            <strong style={{ color: 'var(--text-primary)' }}>处理信息：</strong>
             页数 {fileInfo.pages}，大小 {fileInfo.fileSizeMB}MB，
             策略 {processingStrategy}，
             预计耗时 {Math.round(estimatedTime)}秒
@@ -374,12 +384,12 @@ export default function ProgressBar({
                 const avgAccuracy = relevantHistory.reduce((sum, h) => sum + (h.accuracy || 0), 0) / relevantHistory.length;
                 const confidenceLevel = relevantHistory.length >= 10 ? '高' : relevantHistory.length >= 5 ? '中' : '低';
                 return (
-                  <span style={{ marginLeft: '8px', color: avgAccuracy > 80 ? '#10b981' : avgAccuracy > 60 ? '#f59e0b' : '#ef4444' }}>
+                  <span style={{ marginLeft: '8px', color: avgAccuracy > 80 ? 'var(--success)' : avgAccuracy > 60 ? 'var(--warning)' : 'var(--error)' }}>
                     （预估可信度: {confidenceLevel}，历史准确率: {Math.round(avgAccuracy)}%，基于 {relevantHistory.length} 次记录）
                   </span>
                 );
               }
-              return <span style={{ marginLeft: '8px', color: '#9ca3af' }}>（首次处理此类文档）</span>;
+              return <span style={{ marginLeft: '8px', color: 'var(--text-tertiary)' }}>（首次处理此类文档）</span>;
             })()}
           </div>
         </div>

@@ -305,19 +305,11 @@ npm start
 
 本项目采用 [MIT License](LICENSE) 开源许可证。
 
-## 🙏 致谢
-
-- [火山引擎](https://www.volcengine.com/)：提供强大的AI模型支持
-- [Next.js](https://nextjs.org/)：优秀的React全栈框架
-- [Mermaid.js](https://mermaid.js.org/)：强大的图表渲染引擎
-- [Vercel](https://vercel.com/)：优秀的部署平台
-- 所有贡献者和用户的支持
-
 ## Contact
 
 - **GitHub Issues**：[提交问题或建议](https://github.com/Retamev/DocToMermaid/issues)
 - **讨论区**：[GitHub Discussions](https://github.com/Retamev/DocToMermaid/discussions)
-- **邮箱**：your-email@example.com
+- **邮箱**：reta@cumt.edu.cn
 
 ## 🗺️ 路线图
 

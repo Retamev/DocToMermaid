@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import mermaid from 'mermaid';
 import html2canvas from 'html2canvas';
+import { useTheme } from '../contexts/ThemeContext';
 
 /**
  * Mermaid渲染组件
@@ -12,36 +13,60 @@ export default function MermaidRenderer({ code, direction = 'TB' }) {
   const [isRendered, setIsRendered] = useState(false);
   const [renderError, setRenderError] = useState(null);
   const [isExporting, setIsExporting] = useState(false);
+  const { theme, isDark } = useTheme();
 
   useEffect(() => {
-    // 初始化Mermaid配置
+    // 根据主题初始化Mermaid配置
+    const mermaidTheme = isDark ? 'dark' : 'default';
+    const themeVariables = isDark ? {
+      primaryColor: '#3b82f6',
+      primaryTextColor: '#f8fafc',
+      primaryBorderColor: '#1d4ed8',
+      lineColor: '#cbd5e1',
+      secondaryColor: '#1e293b',
+      tertiaryColor: '#0f172a',
+      background: '#0f172a',
+      mainBkg: '#1e293b',
+      secondBkg: '#334155',
+      tertiaryBkg: '#475569',
+    } : {
+      primaryColor: '#3b82f6',
+      primaryTextColor: '#1f2937',
+      primaryBorderColor: '#2563eb',
+      lineColor: '#6b7280',
+      secondaryColor: '#f3f4f6',
+      tertiaryColor: '#ffffff',
+      background: '#ffffff',
+      mainBkg: '#ffffff',
+      secondBkg: '#f8fafc',
+      tertiaryBkg: '#f1f5f9',
+    };
+
     mermaid.initialize({
       startOnLoad: false,
-      theme: 'default',
+      theme: mermaidTheme,
       securityLevel: 'loose',
       fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif',
-      fontSize: 14,
+      fontSize: 16, // 增加字体大小提高清晰度
       flowchart: {
-        useMaxWidth: true,
+        useMaxWidth: false, // 禁用最大宽度限制，保持原始尺寸
         htmlLabels: true,
         curve: 'basis',
+        padding: 20, // 增加内边距
       },
-      themeVariables: {
-        primaryColor: '#3b82f6',
-        primaryTextColor: '#1f2937',
-        primaryBorderColor: '#2563eb',
-        lineColor: '#6b7280',
-        secondaryColor: '#f3f4f6',
-        tertiaryColor: '#ffffff',
-      },
+      themeVariables,
+      // 添加高分辨率配置
+      look: 'handDrawn',
+      wrap: true,
+      maxTextSize: 90000,
     });
-  }, []);
+  }, [isDark]);
 
   useEffect(() => {
     if (code && mermaidRef.current) {
       renderMermaid();
     }
-  }, [code]);
+  }, [code, theme]);
 
   const renderMermaid = async () => {
     if (!mermaidRef.current || !code) return;
@@ -86,14 +111,14 @@ export default function MermaidRenderer({ code, direction = 'TB' }) {
       mermaidRef.current.innerHTML = `
         <div style="
           padding: 20px;
-          border: 2px dashed #ef4444;
-          border-radius: 8px;
-          background-color: #fef2f2;
-          color: #dc2626;
+          border: 2px dashed var(--error);
+          border-radius: var(--radius-md);
+          background-color: ${isDark ? 'rgba(239, 68, 68, 0.1)' : '#fef2f2'};
+          color: var(--error);
           text-align: center;
           font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         ">
-          <h3 style="margin: 0 0 10px 0; color: #dc2626;">渲染错误</h3>
+          <h3 style="margin: 0 0 10px 0; color: var(--error);">渲染错误</h3>
           <p style="margin: 0; font-size: 14px;">${error.message}</p>
         </div>
       `;
@@ -111,15 +136,20 @@ export default function MermaidRenderer({ code, direction = 'TB' }) {
         throw new Error('No SVG element found');
       }
 
-      // 使用html2canvas截图
+      // 使用html2canvas截图，提高分辨率
       const canvas = await html2canvas(mermaidRef.current, {
-        backgroundColor: '#ffffff',
-        scale: 2, // 高分辨率
+        backgroundColor: isDark ? '#0f172a' : '#ffffff',
+        scale: 4, // 提高到4倍分辨率
         useCORS: true,
         allowTaint: true,
         logging: false,
         width: svgElement.clientWidth,
         height: svgElement.clientHeight,
+        // 添加高质量渲染选项
+        dpi: 300, // 设置DPI为300
+        foreignObjectRendering: true,
+        imageTimeout: 15000,
+        removeContainer: true,
       });
 
       // 创建下载链接
@@ -189,10 +219,10 @@ export default function MermaidRenderer({ code, direction = 'TB' }) {
       <div style={{
         padding: '40px',
         textAlign: 'center',
-        color: '#6b7280',
-        border: '2px dashed #d1d5db',
-        borderRadius: '8px',
-        backgroundColor: '#f9fafb',
+        color: 'var(--text-tertiary)',
+        border: '2px dashed var(--border-secondary)',
+        borderRadius: 'var(--radius-md)',
+        backgroundColor: 'var(--bg-secondary)',
       }}>
         <p>暂无Mermaid代码可渲染</p>
       </div>
@@ -208,42 +238,34 @@ export default function MermaidRenderer({ code, direction = 'TB' }) {
         alignItems: 'center',
         marginBottom: '16px',
         padding: '12px',
-        backgroundColor: '#f8fafc',
-        borderRadius: '8px',
-        border: '1px solid #e2e8f0',
+        backgroundColor: 'var(--bg-secondary)',
+        borderRadius: 'var(--radius-md)',
+        border: '1px solid var(--border-primary)',
       }}>
-        <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '600' }}>Mermaid 图表预览</h3>
+        <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '600', color: 'var(--text-primary)' }}>Mermaid 图表预览</h3>
         
         <div style={{ display: 'flex', gap: '8px' }}>
           <button
-            onClick={renderMermaid}
-            style={{
-              padding: '6px 12px',
-              backgroundColor: '#3b82f6',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontSize: '14px',
-            }}
-          >
-            🔄 重新渲染
-          </button>
-          
-          <button
-            onClick={copyToClipboard}
-            style={{
-              padding: '6px 12px',
-              backgroundColor: '#6b7280',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontSize: '14px',
-            }}
-          >
-            📋 复制代码
-          </button>
+              onClick={renderMermaid}
+              className="btn-primary"
+              style={{
+                padding: '6px 12px',
+                fontSize: '14px',
+              }}
+            >
+              🔄 重新渲染
+            </button>
+            
+            <button
+              onClick={copyToClipboard}
+              className="btn-secondary"
+              style={{
+                padding: '6px 12px',
+                fontSize: '14px',
+              }}
+            >
+              📋 复制代码
+            </button>
           
           {isRendered && (
             <>
@@ -251,12 +273,13 @@ export default function MermaidRenderer({ code, direction = 'TB' }) {
                 onClick={exportAsSVG}
                 style={{
                   padding: '6px 12px',
-                  backgroundColor: '#10b981',
+                  backgroundColor: 'var(--success)',
                   color: 'white',
                   border: 'none',
-                  borderRadius: '6px',
+                  borderRadius: 'var(--radius-md)',
                   cursor: 'pointer',
                   fontSize: '14px',
+                  transition: 'all var(--transition-fast)',
                 }}
               >
                 📁 导出SVG
@@ -267,12 +290,14 @@ export default function MermaidRenderer({ code, direction = 'TB' }) {
                 disabled={isExporting}
                 style={{
                   padding: '6px 12px',
-                  backgroundColor: isExporting ? '#9ca3af' : '#f59e0b',
+                  backgroundColor: isExporting ? 'var(--text-tertiary)' : 'var(--warning)',
                   color: 'white',
                   border: 'none',
-                  borderRadius: '6px',
+                  borderRadius: 'var(--radius-md)',
                   cursor: isExporting ? 'not-allowed' : 'pointer',
                   fontSize: '14px',
+                  transition: 'all var(--transition-fast)',
+                  opacity: isExporting ? 0.6 : 1,
                 }}
               >
                 {isExporting ? '🔄 导出中...' : '🖼️ 导出PNG'}
@@ -288,10 +313,15 @@ export default function MermaidRenderer({ code, direction = 'TB' }) {
         style={{
           minHeight: '200px',
           padding: '20px',
-          border: '1px solid #e2e8f0',
-          borderRadius: '8px',
-          backgroundColor: '#ffffff',
+          border: '1px solid var(--border-primary)',
+          borderRadius: 'var(--radius-md)',
+          backgroundColor: 'var(--bg-primary)',
           overflow: 'auto',
+          transition: 'all var(--transition-normal)',
+          // 优化SVG渲染质量
+          imageRendering: 'crisp-edges',
+          shapeRendering: 'geometricPrecision',
+          textRendering: 'geometricPrecision',
         }}
       />
       
@@ -300,10 +330,10 @@ export default function MermaidRenderer({ code, direction = 'TB' }) {
         <div style={{
           marginTop: '12px',
           padding: '12px',
-          backgroundColor: '#fef2f2',
-          border: '1px solid #fecaca',
-          borderRadius: '6px',
-          color: '#dc2626',
+          backgroundColor: isDark ? 'rgba(239, 68, 68, 0.1)' : '#fef2f2',
+          border: '1px solid var(--error)',
+          borderRadius: 'var(--radius-md)',
+          color: 'var(--error)',
           fontSize: '14px',
         }}>
           <strong>渲染错误：</strong>{renderError}
@@ -314,10 +344,10 @@ export default function MermaidRenderer({ code, direction = 'TB' }) {
         <div style={{
           marginTop: '12px',
           padding: '8px 12px',
-          backgroundColor: '#f0fdf4',
-          border: '1px solid #bbf7d0',
-          borderRadius: '6px',
-          color: '#166534',
+          backgroundColor: isDark ? 'rgba(16, 185, 129, 0.1)' : '#f0fdf4',
+          border: '1px solid var(--success)',
+          borderRadius: 'var(--radius-md)',
+          color: 'var(--success)',
           fontSize: '14px',
         }}>
           ✅ 图表渲染成功！可以导出为PNG或SVG格式。

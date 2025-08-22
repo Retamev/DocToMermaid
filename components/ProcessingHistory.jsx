@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { useTheme } from '../contexts/ThemeContext';
 
 /**
  * 处理历史数据管理组件
@@ -10,6 +11,7 @@ export default function ProcessingHistory({ isOpen, onClose }) {
   const [stats, setStats] = useState(null);
   const [sortBy, setSortBy] = useState('timestamp');
   const [filterStrategy, setFilterStrategy] = useState('all');
+  const { isDark } = useTheme();
 
   // 获取历史数据
   const loadHistory = () => {
@@ -87,10 +89,37 @@ export default function ProcessingHistory({ isOpen, onClose }) {
 
   // 清理历史数据
   const clearHistory = () => {
-    if (confirm('确定要清除所有历史处理记录吗？这将重置预估算法的学习数据。')) {
-      localStorage.removeItem('mermaid_processing_history');
-      setHistory([]);
-      setStats(null);
+    console.log('clearHistory function called'); // 调试日志
+    
+    try {
+      // 直接执行清除操作，不使用confirm（避免被浏览器阻止）
+      const shouldClear = true; // 可以后续改为更好的确认机制
+      
+      if (shouldClear) {
+        console.log('开始清除历史记录...'); // 调试日志
+        
+        // 清除localStorage
+        localStorage.removeItem('mermaid_processing_history');
+        console.log('localStorage已清除'); // 调试日志
+        
+        // 更新组件状态
+        setHistory([]);
+        setStats(null);
+        console.log('组件状态已重置'); // 调试日志
+        
+        // 提供用户反馈
+        console.log('历史记录已清除');
+        
+        // 使用更可靠的提示方式
+        setTimeout(() => {
+          alert('历史记录已成功清除！');
+        }, 100);
+      }
+    } catch (error) {
+      console.error('清除历史记录时出错:', error);
+      setTimeout(() => {
+        alert('清除历史记录失败，请重试。');
+      }, 100);
     }
   };
 
@@ -158,20 +187,22 @@ export default function ProcessingHistory({ isOpen, onClose }) {
       left: 0,
       right: 0,
       bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      backgroundColor: isDark ? 'rgba(0, 0, 0, 0.7)' : 'rgba(0, 0, 0, 0.5)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       zIndex: 1000,
+      backdropFilter: 'blur(4px)',
     }}>
       <div style={{
-        backgroundColor: 'white',
+        backgroundColor: 'var(--bg-primary)',
         borderRadius: '12px',
         padding: '24px',
         maxWidth: '90vw',
         maxHeight: '90vh',
         overflow: 'auto',
-        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+        boxShadow: isDark ? '0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2)' : '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+        border: '1px solid var(--border-primary)',
       }}>
         {/* 标题栏 */}
         <div style={{
@@ -179,10 +210,10 @@ export default function ProcessingHistory({ isOpen, onClose }) {
           justifyContent: 'space-between',
           alignItems: 'center',
           marginBottom: '20px',
-          borderBottom: '1px solid #e5e7eb',
+          borderBottom: '1px solid var(--border-primary)',
           paddingBottom: '16px',
         }}>
-          <h2 style={{ margin: 0, fontSize: '20px', fontWeight: '600' }}>📊 处理历史分析</h2>
+          <h2 style={{ margin: 0, fontSize: '20px', fontWeight: '600', color: 'var(--text-primary)' }}>📊 处理历史分析</h2>
           <button
             onClick={onClose}
             style={{
@@ -190,7 +221,18 @@ export default function ProcessingHistory({ isOpen, onClose }) {
               border: 'none',
               fontSize: '24px',
               cursor: 'pointer',
-              color: '#6b7280',
+              color: 'var(--text-secondary)',
+              padding: '4px',
+              borderRadius: 'var(--radius-sm)',
+              transition: 'all var(--transition-fast)',
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = 'var(--bg-secondary)';
+              e.target.style.color = 'var(--text-primary)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = 'transparent';
+              e.target.style.color = 'var(--text-secondary)';
             }}
           >
             ✕
@@ -205,52 +247,48 @@ export default function ProcessingHistory({ isOpen, onClose }) {
             gap: '16px',
             marginBottom: '24px',
           }}>
-            <div style={{
+            <div className="card" style={{
               padding: '16px',
-              backgroundColor: '#f8fafc',
-              borderRadius: '8px',
-              border: '1px solid #e2e8f0',
+              textAlign: 'center',
             }}>
-              <div style={{ fontSize: '24px', fontWeight: '700', color: '#3b82f6' }}>
+              <div style={{ fontSize: '24px', fontWeight: '700', color: 'var(--accent-primary)' }}>
                 {stats.totalRecords}
               </div>
-              <div style={{ fontSize: '14px', color: '#6b7280' }}>总处理次数</div>
+              <div style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>总处理次数</div>
             </div>
             
-            <div style={{
+            <div className="card" style={{
               padding: '16px',
-              backgroundColor: '#f0fdf4',
-              borderRadius: '8px',
-              border: '1px solid #bbf7d0',
+              textAlign: 'center',
+              backgroundColor: isDark ? 'rgba(16, 185, 129, 0.1)' : '#f0fdf4',
+              border: '1px solid var(--success)',
             }}>
-              <div style={{ fontSize: '24px', fontWeight: '700', color: '#10b981' }}>
+              <div style={{ fontSize: '24px', fontWeight: '700', color: 'var(--success)' }}>
                 {Math.round(stats.avgAccuracy)}%
               </div>
-              <div style={{ fontSize: '14px', color: '#6b7280' }}>平均预估准确率</div>
+              <div style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>平均预估准确率</div>
             </div>
             
-            <div style={{
+            <div className="card" style={{
               padding: '16px',
-              backgroundColor: '#fefce8',
-              borderRadius: '8px',
-              border: '1px solid #fde047',
+              textAlign: 'center',
+              backgroundColor: isDark ? 'rgba(245, 158, 11, 0.1)' : '#fefce8',
+              border: '1px solid var(--warning)',
             }}>
-              <div style={{ fontSize: '24px', fontWeight: '700', color: '#eab308' }}>
+              <div style={{ fontSize: '24px', fontWeight: '700', color: 'var(--warning)' }}>
                 {Math.round(stats.accurateRate)}%
               </div>
-              <div style={{ fontSize: '14px', color: '#6b7280' }}>高准确率记录占比</div>
+              <div style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>高准确率记录占比</div>
             </div>
             
-            <div style={{
+            <div className="card" style={{
               padding: '16px',
-              backgroundColor: '#f1f5f9',
-              borderRadius: '8px',
-              border: '1px solid #cbd5e1',
+              textAlign: 'center',
             }}>
-              <div style={{ fontSize: '24px', fontWeight: '700', color: '#64748b' }}>
+              <div style={{ fontSize: '24px', fontWeight: '700', color: 'var(--text-primary)' }}>
                 {Math.round(stats.avgActual)}s
               </div>
-              <div style={{ fontSize: '14px', color: '#6b7280' }}>平均实际耗时</div>
+              <div style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>平均实际耗时</div>
             </div>
           </div>
         )}
